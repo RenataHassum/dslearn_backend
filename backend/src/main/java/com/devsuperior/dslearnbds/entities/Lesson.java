@@ -2,14 +2,14 @@ package com.devsuperior.dslearnbds.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_lesson")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Lesson implements Serializable { //classe abstrata - não pode ser instanciada - Herança total, só instancia as subclasses
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +23,12 @@ public abstract class Lesson implements Serializable { //classe abstrata - não 
     @ManyToMany
     @JoinTable(name = "tb_lessons_done", joinColumns = @JoinColumn(name = "lesson_id"), inverseJoinColumns = {@JoinColumn(name = "user_id"), @JoinColumn(name = "offer_id"),})
     private Set<Enrollment> enrollmentsDone = new HashSet<>();
+
+    @OneToMany(mappedBy = "lesson")
+    private List<Deliver> deliveries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson")
+    private List<Topic> topics = new ArrayList<>();
 
     public Lesson() {
     }
@@ -68,6 +74,14 @@ public abstract class Lesson implements Serializable { //classe abstrata - não 
 
     public Set<Enrollment> getEnrollmentsDone() {
         return enrollmentsDone;
+    }
+
+    public List<Deliver> getDeliveries() {
+        return deliveries;
+    }
+
+    public List<Topic> getTopics() {
+        return topics;
     }
 
     @Override
