@@ -22,7 +22,7 @@ public class UserDto implements Serializable {
 
     public UserDto(User entity) {
         id = entity.getId();
-        name = entity.getUsername();
+        name = entity.getName();
         email = entity.getEmail();
     }
 
