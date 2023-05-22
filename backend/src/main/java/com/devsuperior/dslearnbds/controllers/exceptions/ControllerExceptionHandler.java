@@ -62,16 +62,14 @@ public class ControllerExceptionHandler implements Serializable {
 
     @ExceptionHandler(ForbiddenException.class) // 403
     public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
         OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
-        return ResponseEntity.status(status).body(err);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
     }
 
     @ExceptionHandler(UnauthorizedException.class) // 401
     public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
         OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());
-        return ResponseEntity.status(status).body(err);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
     }
 
 }
