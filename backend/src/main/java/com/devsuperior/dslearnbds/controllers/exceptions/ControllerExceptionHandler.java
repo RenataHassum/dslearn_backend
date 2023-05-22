@@ -1,7 +1,9 @@
-package com.devsuperior.dslearnbds.controllers;
+package com.devsuperior.dslearnbds.controllers.exceptions;
 
 import com.devsuperior.dslearnbds.services.exceptions.DatabaseException;
+import com.devsuperior.dslearnbds.services.exceptions.ForbiddenException;
 import com.devsuperior.dslearnbds.services.exceptions.ResourceNotFoundException;
+import com.devsuperior.dslearnbds.services.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -10,10 +12,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.time.Instant;
 
 @ControllerAdvice
-public class ControllerExceptionHandler {
+public class ControllerExceptionHandler implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
@@ -53,6 +57,20 @@ public class ControllerExceptionHandler {
             err.addError(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(ForbiddenException.class) // 403
+    public ResponseEntity<OAuthCustomError> forbidden(ForbiddenException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        OAuthCustomError err = new OAuthCustomError("Forbidden", e.getMessage());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class) // 401
+    public ResponseEntity<OAuthCustomError> unauthorized(UnauthorizedException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        OAuthCustomError err = new OAuthCustomError("Unauthorized", e.getMessage());
         return ResponseEntity.status(status).body(err);
     }
 
