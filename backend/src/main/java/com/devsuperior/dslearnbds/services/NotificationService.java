@@ -19,10 +19,17 @@ public class NotificationService {
     @Autowired
     AuthService authService;
 
+//    @Transactional(readOnly = true)
+//    public Page<NotificationDto> notificationsForCurrentUser(Pageable pageable) {
+//        User user = authService.authenticated();
+//        Page<Notification> page = repository.findByUser(user, pageable);
+//        return page.map(x -> new NotificationDto(x));
+//    }
+
     @Transactional(readOnly = true)
-    public Page<NotificationDto> notificationsForCurrentUser(Pageable pageable) {
+    public Page<NotificationDto> notificationsForCurrentUser(boolean unreadOnly, Pageable pageable) {
         User user = authService.authenticated();
-        Page<Notification> page = repository.findByUser(user, pageable);
+        Page<Notification> page = repository.find(user, unreadOnly, pageable);
         return page.map(x -> new NotificationDto(x));
     }
 }
